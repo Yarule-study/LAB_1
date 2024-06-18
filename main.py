@@ -1,7 +1,7 @@
 import sys
 from converter import markdown_to_html
 
-def read_markdown_file(file_path):
+def load_markdown_file(file_path):
     try:
         with open(file_path, 'r', encoding='utf-8-sig') as file:
             return file.read()
@@ -29,7 +29,7 @@ def main():
         sys.exit(1)
 
     input_file = sys.argv[1]
-    markdown_content = read_markdown_file(input_file)
+    markdown_content = load_markdown_file(input_file)
     html_content = markdown_to_html(markdown_content)
 
     if len(sys.argv) > 2 and sys.argv[2] == '--out':
