@@ -10,10 +10,12 @@ Markdown to HTML Converter is a command-line tool that takes a Markdown file and
     ```bash
     git clone <URL>
     ```
+   
 2. **Navigate to the project directory:**
     ```bash
     cd <project-directory>
     ```
+   
 3. **Run the application:**
     ```bash
     python main.py /path/to/file.md
@@ -30,3 +32,8 @@ Markdown to HTML Converter is a command-line tool that takes a Markdown file and
 2. **Optionally, if you want to save the result to a file,** use the `--out` flag followed by the path to the output HTML file.
 
 3. **The program will output the HTML** to the standard output or save it to the specified file.
+
+## Link to revert-commit
+
+**Revert "Adding the ability to save HTML to a file":**
+https://github.com/Yarule-study/LAB_1/commit/a8d331ad4e154284e6dac1185019b7674f47d9ea

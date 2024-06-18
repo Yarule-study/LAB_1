@@ -1,51 +1,51 @@
 import sys
 from converter import markdown_to_html
 
-def load_markdown_file(file_path):
-    try:
-        with open(file_path, 'r', encoding='utf-8-sig') as file:
-            return file.read()
-    except FileNotFoundError:
-        print("Error: File not found.", file=sys.stderr)
-        sys.exit(1)
-    except UnicodeDecodeError:
+def load_markdown_file(path):
+    encodings = ['utf-8-sig', 'utf-16']
+    for encoding in encodings:
         try:
-            with open(file_path, 'r', encoding='utf-16') as file:
+            with open(path, 'r', encoding=encoding) as file:
                 return file.read()
+        except FileNotFoundError:
+            sys.stderr.write(f"Error: File not found - {path}\n")
+            sys.exit(1)
         except UnicodeDecodeError:
-            print("Error: Unable to decode the file. Please make sure it is in UTF-16 encoding.", file=sys.stderr)
-            sys.exit(1)
+            continue
         except Exception as e:
-            print("Error:", e, file=sys.stderr)
+            sys.stderr.write(f"Error: {e}\n")
             sys.exit(1)
-    except Exception as e:
-        print("Error:", e, file=sys.stderr)
-        sys.exit(1)
+    sys.stderr.write("Error: Unable to decode the file. Supported encodings: utf-8-sig, utf-16\n")
+    sys.exit(1)
 
-
-def main():
-    if len(sys.argv) < 2:
-        print("Usage: python main.py <input_markdown_file> [--out <output_html_file>]", file=sys.stderr)
-        sys.exit(1)
-
-    input_file = sys.argv[1]
-    markdown_content = load_markdown_file(input_file)
-    html_content = markdown_to_html(markdown_content)
-
-    if len(sys.argv) > 2 and sys.argv[2] == '--out':
-        if len(sys.argv) < 4:
-            print("Error: Please specify the output file path.", file=sys.stderr)
-            sys.exit(1)
-        output_file = sys.argv[3]
+def convert_markdown(input_path, output_path=None):
+    markdown_text = load_markdown_file(input_path)
+    html_text = markdown_to_html(markdown_text)
+    if output_path:
         try:
-            with open(output_file, 'w', encoding='utf-8') as file:
-                file.write(html_content)
-            print("HTML output written to", output_file)
+            with open(output_path, 'w', encoding='utf-8') as file:
+                file.write(html_text)
+            print(f"HTML output written to {output_path}")
         except Exception as e:
-            print("Error:", e, file=sys.stderr)
+            sys.stderr.write(f"Error: {e}\n")
             sys.exit(1)
     else:
-        print(html_content)
+        print(html_text)
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) < 2:
+        sys.stderr.write("Usage: python main.py <input_markdown_file> [--out <output_html_file>]\n")
+        sys.exit(1)
+    
+    input_md_file = sys.argv[1]
+    output_html_file = None
+    
+    if len(sys.argv) > 2:
+        if sys.argv[2] == '--out' and len(sys.argv) == 4:
+            output_html_file = sys.argv[3]
+        else:
+            sys.stderr.write("Error: Invalid arguments. Usage: python main.py <input_markdown_file> [--out <output_html_file>]\n")
+            sys.exit(1)
+    
+    convert_markdown(input_md_file, output_html_file)
+    
